@@ -4,6 +4,7 @@ import { FlatList, Text, View, TouchableOpacity } from 'react-native';
 import { getButtonWidth, styles } from './styles';
 import { buttons, specialCharacters } from './data';
 import { Button } from './types';
+import { append, calculate } from './calculationHelper';
 
 export default function App() {
 	const [prevValue, setPrevValue] = useState<any>(0);
@@ -11,35 +12,35 @@ export default function App() {
 	const [operation, setOperation] = useState<any>('');
 	const [displayValue, setDisplayValue] = useState<any>('0');
 
-	const calculate = (value: string) => {
+	const updateValue = (value: string) => {
 		if (value === 'AC') {
 			setPrevValue(0);
 			setCurrentValue(0);
 			setOperation('');
 			setDisplayValue('0');
 		} else if (specialCharacters.includes(value)) {
-				setOperation(value);
+			const display = calculate(operation, prevValue, currentValue);
+			if (operation !== '') {
+				setPrevValue(display);
+				setDisplayValue(display);
+			} else {
 				setPrevValue(currentValue);
-				setCurrentValue(0);
 				setDisplayValue(currentValue);
+			}
+			setOperation(value);
+			setCurrentValue(0);
 		} else if (!specialCharacters.includes(value) && value !== '=') {
 			if (currentValue === 0) {
 				setCurrentValue(value);
 				setDisplayValue(value);
 			} else {
-				setDisplayValue(currentValue + '' + value);
-				setCurrentValue(currentValue + '' + value);
+        const result = append(currentValue, value)
+				setDisplayValue(result);
+				setCurrentValue(result);
 			}
 		} else if (value === '=') {
-			if (operation === '/') {
-				setDisplayValue(parseFloat(prevValue) / parseFloat(currentValue));
-			} else if (operation === 'x') {
-				setDisplayValue(parseFloat(prevValue) * parseFloat(currentValue));
-			} else if (operation === '-') {
-				setDisplayValue(parseFloat(prevValue) - parseFloat(currentValue));
-			} else if (operation === '+') {
-				setDisplayValue(parseFloat(prevValue) + parseFloat(currentValue));
-			}
+			const display = calculate(operation, prevValue, currentValue);
+			setDisplayValue(display);
 			setCurrentValue(0);
 			setPrevValue(0);
 			setOperation('');
@@ -50,7 +51,7 @@ export default function App() {
 		const width = getButtonWidth(item.value);
 		return (
 			<TouchableOpacity
-				onPress={() => calculate(item.value)}
+				onPress={() => updateValue(item.value)}
 				style={[styles.buttonContainer, { width, backgroundColor: item.color }]}
 			>
 				<Text style={[styles.buttonText, { color: item.textColor }]}>

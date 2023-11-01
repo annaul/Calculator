@@ -18,28 +18,11 @@ export default function App() {
 			setOperation('');
 			setDisplayValue('0');
 		} else if (specialCharacters.includes(value)) {
-			if (operation !== '') {
-				if (operation === '/') {
-					setDisplayValue(parseFloat(prevValue) / parseFloat(currentValue));
-          setCurrentValue(parseFloat(prevValue) / parseFloat(currentValue))
-				} else if (operation === 'x') {
-					setDisplayValue(parseFloat(prevValue) * parseFloat(currentValue));
-          setCurrentValue(parseFloat(prevValue) * parseFloat(currentValue))
-				} else if (operation === '-') {
-					setDisplayValue(parseFloat(prevValue) - parseFloat(currentValue));
-          setCurrentValue(parseFloat(prevValue) - parseFloat(currentValue))
-				} else if (operation === '+') {
-					setDisplayValue(parseFloat(prevValue) + parseFloat(currentValue));
-          setCurrentValue(parseFloat(prevValue) + parseFloat(currentValue))
-				}
-    
-			} else {
 				setOperation(value);
 				setPrevValue(currentValue);
 				setCurrentValue(0);
 				setDisplayValue(currentValue);
-			}
-		} else if (!specialCharacters.includes(value) && value !== '='&& ) {
+		} else if (!specialCharacters.includes(value) && value !== '=') {
 			if (currentValue === 0) {
 				setCurrentValue(value);
 				setDisplayValue(value);

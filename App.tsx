@@ -23,7 +23,7 @@ export default function App() {
   }
   // Check for digits and decimal point
   else if (isDigitOrDecimal(value)) {
-    handleDigitOrDecimal(value);
+    handleDigitOrNewEntry(value);
   }
   // Check for the equals sign (=)
   else if (value === '=') {
@@ -51,7 +51,7 @@ const handleSpecialCharacter = (value: SetStateAction<string>) => {
   setCurrentValue('0');
 };
 
-const handleDigitOrDecimal = (value: string) => {
+const handleDigitOrNewEntry = (value: string) => {
   if (currentValue === '0') {
     setCurrentValue(value);
     setDisplayValue(value);

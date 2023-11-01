@@ -1,37 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { FlatList, Text, View, ColorValue, TouchableOpacity } from 'react-native';
+import { FlatList, Text, View, TouchableOpacity } from 'react-native';
 import { getButtonWidth, styles } from './styles';
-
-interface Button {
-	value: string;
-	color: ColorValue;
-	textColor: ColorValue;
-}
-
-const buttons: Button[] = [
-	{ value: 'AC', color: '#a5a5a5', textColor: '#050505' },
-	{ value: '+/-', color: '#a5a5a5', textColor: '#050505' },
-	{ value: '%', color: '#a5a5a5', textColor: '#050505' },
-	{ value: '/', color: '#ff9f06', textColor: '#ffffff' },
-	{ value: '7', color: '#333333', textColor: '#f6f6f6' },
-	{ value: '8', color: '#333333', textColor: '#f6f6f6' },
-	{ value: '9', color: '#333333', textColor: '#f6f6f6' },
-	{ value: 'x', color: '#ff9f06', textColor: '#ffffff' },
-	{ value: '4', color: '#333333', textColor: '#f6f6f6' },
-	{ value: '5', color: '#333333', textColor: '#f6f6f6' },
-	{ value: '6', color: '#333333', textColor: '#f6f6f6' },
-	{ value: '-', color: '#ff9f06', textColor: '#ffffff' },
-	{ value: '1', color: '#333333', textColor: '#f6f6f6' },
-	{ value: '2', color: '#333333', textColor: '#f6f6f6' },
-	{ value: '3', color: '#333333', textColor: '#f6f6f6' },
-	{ value: '+', color: '#ff9f06', textColor: '#ffffff' },
-	{ value: '0', color: '#333333', textColor: '#f6f6f6' },
-	{ value: '.', color: '#333333', textColor: '#f6f6f6' },
-	{ value: '=', color: '#ff9f06', textColor: '#ffffff' }
-];
-
-const specialCharacters: string[] = ['/', 'x', '-', '+'];
+import { buttons, specialCharacters } from './data';
+import { Button } from './types';
 
 export default function App() {
 	const [prevValue, setPrevValue] = useState<any>(0);
@@ -46,11 +18,28 @@ export default function App() {
 			setOperation('');
 			setDisplayValue('0');
 		} else if (specialCharacters.includes(value)) {
-			setOperation(value);
-			setPrevValue(currentValue);
-			setCurrentValue(0);
-			setDisplayValue(currentValue);
-		} else if (!specialCharacters.includes(value) && value !== '=') {
+			if (operation !== '') {
+				if (operation === '/') {
+					setDisplayValue(parseFloat(prevValue) / parseFloat(currentValue));
+          setCurrentValue(parseFloat(prevValue) / parseFloat(currentValue))
+				} else if (operation === 'x') {
+					setDisplayValue(parseFloat(prevValue) * parseFloat(currentValue));
+          setCurrentValue(parseFloat(prevValue) * parseFloat(currentValue))
+				} else if (operation === '-') {
+					setDisplayValue(parseFloat(prevValue) - parseFloat(currentValue));
+          setCurrentValue(parseFloat(prevValue) - parseFloat(currentValue))
+				} else if (operation === '+') {
+					setDisplayValue(parseFloat(prevValue) + parseFloat(currentValue));
+          setCurrentValue(parseFloat(prevValue) + parseFloat(currentValue))
+				}
+    
+			} else {
+				setOperation(value);
+				setPrevValue(currentValue);
+				setCurrentValue(0);
+				setDisplayValue(currentValue);
+			}
+		} else if (!specialCharacters.includes(value) && value !== '='&& ) {
 			if (currentValue === 0) {
 				setCurrentValue(value);
 				setDisplayValue(value);
@@ -75,7 +64,7 @@ export default function App() {
 	};
 
 	const renderItem = (item: Button) => {
-    const width = getButtonWidth(item.value)
+		const width = getButtonWidth(item.value);
 		return (
 			<TouchableOpacity
 				onPress={() => calculate(item.value)}

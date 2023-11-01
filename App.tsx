@@ -7,19 +7,19 @@ import { Button } from './types';
 import { append, calculate } from './calculationHelper';
 
 export default function App() {
-	const [prevValue, setPrevValue] = useState<any>(0);
-	const [currentValue, setCurrentValue] = useState<any>(0);
-	const [operation, setOperation] = useState<any>('');
-	const [displayValue, setDisplayValue] = useState<any>('0');
+	const [prevValue, setPrevValue] = useState<string>('0');
+	const [currentValue, setCurrentValue] = useState<string>('0');
+	const [operation, setOperation] = useState<string>('');
+	const [displayValue, setDisplayValue] = useState<string>('0');
 
 	const updateValue = (value: string) => {
 		if (value === 'AC') {
-			setPrevValue(0);
-			setCurrentValue(0);
+			setPrevValue('0');
+			setCurrentValue('0');
 			setOperation('');
 			setDisplayValue('0');
 		} else if (specialCharacters.includes(value)) {
-			const display = calculate(operation, prevValue, currentValue);
+			const display = calculate(operation, prevValue, currentValue) || '0';
 			if (operation !== '') {
 				setPrevValue(display);
 				setDisplayValue(display);
@@ -28,9 +28,9 @@ export default function App() {
 				setDisplayValue(currentValue);
 			}
 			setOperation(value);
-			setCurrentValue(0);
+			setCurrentValue('0');
 		} else if (!specialCharacters.includes(value) && value !== '=') {
-			if (currentValue === 0) {
+			if (currentValue === '0') {
 				setCurrentValue(value);
 				setDisplayValue(value);
 			} else {
@@ -39,10 +39,10 @@ export default function App() {
 				setCurrentValue(result);
 			}
 		} else if (value === '=') {
-			const display = calculate(operation, prevValue, currentValue);
+			const display = calculate(operation, prevValue, currentValue) ||'0';
 			setDisplayValue(display);
-			setCurrentValue(0);
-			setPrevValue(0);
+			setCurrentValue('0');
+			setPrevValue('0');
 			setOperation('');
 		}
 	};

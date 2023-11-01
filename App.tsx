@@ -64,13 +64,13 @@ export default function App() {
 			}
 		} else if (value === '=') {
 			if (operation === '/') {
-				setDisplayValue(parseInt(prevValue) / parseInt(currentValue));
+				setDisplayValue(parseFloat(prevValue) / parseFloat(currentValue));
 			} else if (operation === 'x') {
-				setDisplayValue(parseInt(prevValue) * parseInt(currentValue));
+				setDisplayValue(parseFloat(prevValue) * parseFloat(currentValue));
 			} else if (operation === '-') {
-				setDisplayValue(parseInt(prevValue) - parseInt(currentValue));
+				setDisplayValue(parseFloat(prevValue) - parseFloat(currentValue));
 			} else if (operation === '+') {
-				setDisplayValue(parseInt(prevValue) + parseInt(currentValue));
+				setDisplayValue(parseFloat(prevValue) + parseFloat(currentValue));
 			}
 			setCurrentValue(0);
 			setPrevValue(0);

@@ -1,11 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { ColorValue, Dimensions, TouchableOpacity } from 'react-native';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
-
-const screenWidth = Dimensions.get('screen').width;
-const buttonWidth = screenWidth / 5.5;
-const margin = buttonWidth / 11;
+import { FlatList, Text, View, ColorValue, TouchableOpacity } from 'react-native';
+import { getButtonWidth, styles } from './styles';
 
 interface Button {
 	value: string;
@@ -79,7 +75,7 @@ export default function App() {
 	};
 
 	const renderItem = (item: Button) => {
-		const width = item.value === '0' ? (buttonWidth + margin) * 2 : buttonWidth;
+    const width = getButtonWidth(item.value)
 		return (
 			<TouchableOpacity
 				onPress={() => calculate(item.value)}
@@ -113,35 +109,3 @@ export default function App() {
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		top: buttonWidth,
-		flex: 1,
-		backgroundColor: '#000000'
-	},
-	buttonContainer: {
-		height: buttonWidth,
-		borderRadius: 100,
-		margin: margin,
-		alignItems: 'center',
-		justifyContent: 'center'
-	},
-	flatlistContainer: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center'
-	},
-	buttonText: {
-		fontSize: 30,
-		fontWeight: '600'
-	},
-	displayText: {
-		fontSize: 60,
-		fontWeight: '200',
-		color: '#ffffff',
-		textAlign: 'right',
-		paddingHorizontal: margin * 5,
-		width: screenWidth
-	}
-});

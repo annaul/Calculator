@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import { ColorValue, Dimensions, ViewStyle } from 'react-native';
+import { useState } from 'react';
+import { ColorValue, Dimensions, TouchableOpacity } from 'react-native';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 const screenWidth = Dimensions.get('screen').width;
@@ -34,17 +35,60 @@ const buttons: Button[] = [
 	{ value: '=', color: '#ff9f06', textColor: '#ffffff' }
 ];
 
+const specialCharacters: string[] = ['/', 'x', '-', '+'];
+
 export default function App() {
+	const [prevValue, setPrevValue] = useState<any>(0);
+	const [currentValue, setCurrentValue] = useState<any>(0);
+	const [operation, setOperation] = useState<any>('');
+	const [displayValue, setDisplayValue] = useState<any>('0');
+
+	const calculate = (value: string) => {
+		if (value === 'AC') {
+			setPrevValue(0);
+			setCurrentValue(0);
+			setOperation('');
+			setDisplayValue('0');
+		} else if (specialCharacters.includes(value)) {
+			setOperation(value);
+			setPrevValue(currentValue);
+			setCurrentValue(0);
+			setDisplayValue(currentValue);
+		} else if (!specialCharacters.includes(value) && value !== '=') {
+			if (currentValue === 0) {
+				setCurrentValue(value);
+				setDisplayValue(value);
+			} else {
+				setDisplayValue(currentValue + '' + value);
+				setCurrentValue(currentValue + '' + value);
+			}
+		} else if (value === '=') {
+			if (operation === '/') {
+				setDisplayValue(parseInt(prevValue) / parseInt(currentValue));
+			} else if (operation === 'x') {
+				setDisplayValue(parseInt(prevValue) * parseInt(currentValue));
+			} else if (operation === '-') {
+				setDisplayValue(parseInt(prevValue) - parseInt(currentValue));
+			} else if (operation === '+') {
+				setDisplayValue(parseInt(prevValue) + parseInt(currentValue));
+			}
+			setCurrentValue(0);
+			setPrevValue(0);
+			setOperation('');
+		}
+	};
+
 	const renderItem = (item: Button) => {
 		const width = item.value === '0' ? (buttonWidth + margin) * 2 : buttonWidth;
 		return (
-			<View
+			<TouchableOpacity
+				onPress={() => calculate(item.value)}
 				style={[styles.buttonContainer, { width, backgroundColor: item.color }]}
 			>
 				<Text style={[styles.buttonText, { color: item.textColor }]}>
 					{item.value}
 				</Text>
-			</View>
+			</TouchableOpacity>
 		);
 	};
 
@@ -56,6 +100,15 @@ export default function App() {
 				numColumns={4}
 				renderItem={({ item }) => renderItem(item)}
 				contentContainerStyle={styles.flatlistContainer}
+				ListHeaderComponent={
+					<Text
+						numberOfLines={1}
+						ellipsizeMode="clip"
+						style={styles.displayText}
+					>
+						{displayValue}
+					</Text>
+				}
 			/>
 		</View>
 	);
@@ -65,9 +118,7 @@ const styles = StyleSheet.create({
 	container: {
 		top: buttonWidth,
 		flex: 1,
-		backgroundColor: '#000000',
-		alignItems: 'center',
-		justifyContent: 'center'
+		backgroundColor: '#000000'
 	},
 	buttonContainer: {
 		height: buttonWidth,
@@ -78,11 +129,19 @@ const styles = StyleSheet.create({
 	},
 	flatlistContainer: {
 		flex: 1,
-		alignItems: 'center',
-		justifyContent: 'center'
+		justifyContent: 'center',
+		alignItems: 'center'
 	},
 	buttonText: {
 		fontSize: 30,
 		fontWeight: '600'
+	},
+	displayText: {
+		fontSize: 60,
+		fontWeight: '200',
+		color: '#ffffff',
+		textAlign: 'right',
+		paddingHorizontal: margin * 5,
+		width: screenWidth
 	}
 });
